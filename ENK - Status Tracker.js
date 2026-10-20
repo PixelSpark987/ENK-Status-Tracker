@@ -4,9 +4,9 @@
 // @author       PixelSpark987 - https://is.gd/PS987
 // @namespace    http://tampermonkey.net/
 // @icon         https://is.gd/NKTwins
-// @downloadURL  
-// @updateURL    
-// @version      2026-10-19_01
+// @downloadURL  https://raw.githubusercontent.com/PixelSpark987/ENK-Status-Tracker/refs/heads/main/ENK%20-%20Status%20Tracker.js
+// @updateURL    https://raw.githubusercontent.com/PixelSpark987/ENK-Status-Tracker/refs/heads/main/ENK%20-%20Status%20Tracker.js
+// @version      2026-10-19_02
 // @match        *://evilkaraoke.com/*
 // @match        *://*.evilkaraoke.com/*
 // @match        *://neurokaraoke.com/*
