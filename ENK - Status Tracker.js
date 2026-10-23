@@ -192,7 +192,7 @@
 
     const style = document.createElement('style');
     style.innerHTML = `
-        .sl-complete-card > *:not(.sl-btn-universal) {
+        .sl-complete-card .setlist-art {
             opacity: ${CARD_DIM} !important;
             filter: grayscale(${CARD_GREYSCALE}) blur(${CARD_BLUR}) !important;
         }
