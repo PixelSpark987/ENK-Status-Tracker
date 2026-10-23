@@ -6,7 +6,7 @@
 // @icon         https://is.gd/NKTwins
 // @downloadURL  https://raw.githubusercontent.com/PixelSpark987/ENK-Status-Tracker/refs/heads/main/ENK%20-%20Status%20Tracker.js
 // @updateURL    https://raw.githubusercontent.com/PixelSpark987/ENK-Status-Tracker/refs/heads/main/ENK%20-%20Status%20Tracker.js
-// @version      2026-10-22_01
+// @version      2026-10-22_02
 // @match        *://evilkaraoke.com/*
 // @match        *://*.evilkaraoke.com/*
 // @match        *://neurokaraoke.com/*
