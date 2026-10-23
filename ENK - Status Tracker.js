@@ -6,7 +6,7 @@
 // @icon         https://is.gd/NKTwins
 // @downloadURL  https://raw.githubusercontent.com/PixelSpark987/ENK-Status-Tracker/refs/heads/main/ENK%20-%20Status%20Tracker.js
 // @updateURL    https://raw.githubusercontent.com/PixelSpark987/ENK-Status-Tracker/refs/heads/main/ENK%20-%20Status%20Tracker.js
-// @version      2026-10-19_02
+// @version      2026-10-22_01
 // @match        *://evilkaraoke.com/*
 // @match        *://*.evilkaraoke.com/*
 // @match        *://neurokaraoke.com/*
@@ -21,6 +21,16 @@
 
 (function() {
     'use strict';
+
+    // --- CONFIGURATION ---
+    const CARD_DIM = 0.45;
+    const CARD_BLUR = '0px';
+    const CARD_GREYSCALE = '1.0';
+
+    const COLOR_CONFIG = {
+        pending: ["Pending Status", "#ff0066"],
+        done:    ["Done Status",    "#9d5cff"]
+    };
 
     // --- DYNAMIC GITHUB CONFIGURATION ---
     let GITHUB_USERNAME = GM_getValue("github_username", "");
@@ -183,8 +193,8 @@
     const style = document.createElement('style');
     style.innerHTML = `
         .sl-complete-card > *:not(.sl-btn-universal) {
-            opacity: 0.45 !important;
-            filter: saturate(0.4) !important;
+            opacity: ${CARD_DIM} !important;
+            filter: grayscale(${CARD_GREYSCALE}) blur(${CARD_BLUR}) !important;
         }
 
         .sl-btn-universal {
@@ -201,8 +211,8 @@
             filter: saturate(1) brightness(1) !important;
         }
 
-        .status-pending { background: #ff0066 !important; }
-        .status-done { background: #00d9ff !important; }
+        .status-pending { background: ${COLOR_CONFIG.pending[1]} !important; }
+        .status-done { background: ${COLOR_CONFIG.done[1]} !important; }
 
         .sl-btn-list {
             position: absolute !important;
