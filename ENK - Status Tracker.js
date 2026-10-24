@@ -6,7 +6,7 @@
 // @icon         https://is.gd/NKTwins
 // @downloadURL  https://raw.githubusercontent.com/PixelSpark987/ENK-Status-Tracker/refs/heads/main/ENK%20-%20Status%20Tracker.js
 // @updateURL    https://raw.githubusercontent.com/PixelSpark987/ENK-Status-Tracker/refs/heads/main/ENK%20-%20Status%20Tracker.js
-// @version      2026-10-22_02
+// @version      2026-10-24_04
 // @match        *://evilkaraoke.com/*
 // @match        *://*.evilkaraoke.com/*
 // @match        *://neurokaraoke.com/*
@@ -31,6 +31,8 @@
         pending: ["Pending Status", "#ff0066"],
         done:    ["Done Status",    "#9d5cff"]
     };
+
+    let isCollapsed = false;
 
     // --- DYNAMIC GITHUB CONFIGURATION ---
     let GITHUB_USERNAME = GM_getValue("github_username", "");
@@ -197,6 +199,10 @@
             filter: grayscale(${CARD_GREYSCALE}) blur(${CARD_BLUR}) !important;
         }
 
+        .sl-complete-card.sl-collapsed {
+            display: none !important;
+        }
+
         .sl-btn-universal {
             color: white !important;
             border: 1px solid rgba(255,255,255,0.4) !important;
@@ -219,14 +225,93 @@
             bottom: 12px !important;
             right: 12px !important;
         }
+
+        #sl-collapse-toggle {
+            background-color: #270716 !important;
+            color: #ff1b6b !important;
+            border: 1px solid #ff1b6b !important;
+            border-radius: 9999px !important;
+            padding: 6px 16px !important;
+            font-size: 0.875rem !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin-left: 8px !important;
+            font-family: inherit !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        #sl-collapse-toggle:hover {
+            background-color: rgba(255, 27, 107, 0.1) !important;
+        }
+
+        #sl-collapse-toggle.active {
+            background-color: #ff1b6b !important;
+            color: white !important;
+        }
     `;
     document.head.appendChild(style);
+
+    function updateCardVisibility() {
+        const cards = document.querySelectorAll('a[href*="/playlist/"]');
+        cards.forEach(card => {
+            if (card.classList.contains('sl-complete-card')) {
+                if (isCollapsed) {
+                    card.classList.add('sl-collapsed');
+                } else {
+                    card.classList.remove('sl-collapsed');
+                }
+            }
+        });
+    }
+
+    function setupHeaderControls() {
+        const filterBar = document.querySelector('.filter-bar');
+        if (filterBar && !document.querySelector('#sl-collapse-toggle')) {
+            const collapseBtn = document.createElement('button');
+            collapseBtn.id = 'sl-collapse-toggle';
+            collapseBtn.type = 'button';
+            collapseBtn.innerText = 'Hide Completed Setlists';
+
+            collapseBtn.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                isCollapsed = !isCollapsed;
+                collapseBtn.innerText = isCollapsed ? 'Show Completed Setlists' : 'Hide Completed Setlists';
+                collapseBtn.classList.toggle('active', isCollapsed);
+                updateCardVisibility();
+            };
+
+            filterBar.appendChild(collapseBtn);
+        }
+
+        const filterBtns = document.querySelectorAll('.filter-bar .filter-btn');
+        filterBtns.forEach(btn => {
+            if (!btn.dataset.slListenerAttached) {
+                btn.dataset.slListenerAttached = 'true';
+                btn.addEventListener('click', () => {
+                    isCollapsed = false;
+                    const collapseBtn = document.querySelector('#sl-collapse-toggle');
+                    if (collapseBtn) {
+                        collapseBtn.innerText = 'Hide Completed Setlists';
+                        collapseBtn.classList.remove('active');
+                    }
+                    updateCardVisibility();
+                });
+            }
+        });
+    }
 
     function runTracker() {
         const isPlaylistPage = window.location.pathname.includes('/playlist/');
         const floatingBtn = document.querySelector('#page-toggle');
 
         if (!isPlaylistPage && floatingBtn) floatingBtn.remove();
+
+        setupHeaderControls();
 
         const cards = document.querySelectorAll('a[href*="/playlist/"]');
         cards.forEach(card => {
@@ -237,7 +322,10 @@
             card.style.position = 'relative';
 
             const isDone = GM_getValue(href, false);
-            if (isDone) card.classList.add('sl-complete-card');
+            if (isDone) {
+                card.classList.add('sl-complete-card');
+                if (isCollapsed) card.classList.add('sl-collapsed');
+            }
 
             const btn = document.createElement('button');
             btn.className = `sl-btn-universal sl-btn-list ${isDone ? 'status-done' : 'status-pending'}`;
